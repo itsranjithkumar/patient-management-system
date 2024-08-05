@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .bg-dark-400 {
+      background-color: #333; /* Replace with your desired color */
+  }
+}
+@layer utilities {
+  .bg-dark-400 {
+    background-color: #your-dark-400-color-code; /* Ensure this matches the configuration */
+  }
+  
+  .border-dark-500 {
+    border-color: #your-dark-500-color-code;
+  }
+  
+  .text-dark-600 {
+    color: #your-dark-600-color-code;
+  }
+}
 
 /* ========================================== TAILWIND STYLES */
 @layer base {
