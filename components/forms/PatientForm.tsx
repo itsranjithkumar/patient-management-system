@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation"
 import { Router } from "lucide-react"
 import router from "next/router"
 
+import { createUser } from "@/lib/actions/patient.actions";
+
 export enum FormFieldType {
     INPUT = "INPUT",
     TEXTAREA = "textarea",
@@ -42,20 +44,20 @@ export const PatientForm = () => {
    async function onSubmit({name, email, phone}:z.infer<typeof UserFormValidation>){
         setisLoading(true);
 
-        // try {
-        //     const userData = {
-        //         name,
-        //         email,
-        //         phone,
+        try {
+            const userData = {
+                name,
+                email,
+                phone,
 
-        //     };
-        //     const user = await createUser(userData);
+            };
+            const user = await createUser(userData);
              
-        //     if(user) router.push(`/patients/${user.$id}/register`)
-        // } catch (error) {
-        //     console.log(error);
+            if(user) router.push(`/patients/${user.$id}/register`)
+        } catch (error) {
+            console.log(error);
 
-        // }
+        }
     }
   
     return (
