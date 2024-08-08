@@ -8,7 +8,7 @@ import { Form, FormControl } from "@/components/ui/form"
 import CustomFormField from '../CustomFormField'
 import SubmitButton from "../SubmitButton"
 import { useState } from "react"
-import { UserFormValidation } from "@/lib/validation"
+import { PatientFormValidation, UserFormValidation } from "@/lib/validation"
 import { useRouter } from "next/navigation"
 import { Router } from "lucide-react"
 import router from "next/router"
@@ -17,10 +17,11 @@ import { createUser } from "@/lib/actions/patient.actions";
 import { FormFieldType } from "./PatientForm"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import { Label } from "../ui/label"
-import { Doctors, GenderOptions, IdentificationTypes } from "@/constants"
+import { Doctors, GenderOptions, IdentificationTypes, PatientFormDefaultValues } from "@/constants"
 import { SelectItem } from "../ui/select"
 import Image from "next/image"
 import FileUploader from "../FileUploader"
+import { getRandomValues } from "crypto"
 
 
 
@@ -32,18 +33,52 @@ const RegisterForm = ({ user }: { user: User }) => {
     const [isLoading, setIsLoading] = useState(false)
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof UserFormValidation>>({
-    resolver: zodResolver(UserFormValidation),
+  const form = useForm<z.infer<typeof PatientFormValidation>>({z function registerPatient(patientData: { userId: string; birthDate: Date; identificationDocument: FormData; name: string; email: string; phone: string; gender: "Male" | "Female" | "Other"; address: string; occupation: string; emergencyContactName: string; emergencyContactNumber: string; primaryPhysician: string; insuranceProvider: string; insurancePolicyNumber: string; treatmentConsent: boolean; disclosureConsent: boolean; privacyConsent: boolean; allergies?: string | undefined; currentMedication?: string | undefined; familyMedicalHistory?: string | undefined; pastMedicalHistory?: string | undefined; identificationType?: string | undefined; identificationNumber?: string | undefined }) {
+    throw new Error("Function not implemented.")
+  
+}
+    resolver: zodResolver(PatientFormValidation),
     defaultValues: {
+      ...PatientFormDefaultValues,
       name: "",
       email:"",
       phone:""
     },
-  })
+  );
+
  
   // 2. Define a submit handler.
-  async function onSubmit({name,email,phone}: z.infer<typeof UserFormValidation>) {
-    setIsLoading(true)
+  async function onSubmit(values: z.infer<typeof PatientFormValidation>) {
+    setIsLoading(true);
+
+    let formData;
+
+    if(values.identificationDocument && values.identificationDocument.length > 0) {{
+      const blobFile = new Blob([values.identificationDocument[0]],{
+        type: values.identificationDocument[0].type, 
+      })
+
+      formData = new FormData();
+      formData.append('blobFile', blobFile);
+      formData.append('fileName', values.identificationDocument[0].name);
+    }
+
+    try {
+      const patientData = {
+        ...values,
+        userId: user.$id,
+        birthDate: new Date(values.birthDate),
+        identificationDocument: formData,
+      }
+      const patient = await registerPatient(patientData);
+
+      if(patient) router.push(`/patient/${user.$id}/new-appointment`)
+
+    } catch (error) {
+      console.log(error);
+    }
+
+    
     try{
         const userData={name,email,phone}
 
@@ -305,7 +340,7 @@ const RegisterForm = ({ user }: { user: User }) => {
             label="Scanned copy of identification document"
             renderSkeleton={(field)=>(
               <FormControl>
-                <FileUploader files={field.value} onChange={field.onChange}/>
+                <FileUploader files={field.value} onchange={field.onChange}/>
               </FormControl>
             )}            
         />
@@ -350,4 +385,7 @@ const RegisterForm = ({ user }: { user: User }) => {
   )
 }
 
+}
 export default RegisterForm
+ 
+
