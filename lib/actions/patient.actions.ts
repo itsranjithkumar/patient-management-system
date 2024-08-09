@@ -1,3 +1,5 @@
+'use server'
+
 import { ID, Query } from "node-appwrite";
 import { storage, users,BUCKET_ID, PROJECT_ID,DATABASE_ID,PATIENT_COLLECTION_ID,ENDPOINT,databases } from "../appwrite.config";
 import { parseStringify } from "../utils";
