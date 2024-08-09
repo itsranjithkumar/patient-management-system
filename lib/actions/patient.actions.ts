@@ -64,7 +64,7 @@ export const registerPatient = async ({ identificationDocument, ...patient}:
         }
 
         const newpatient = await databases.createDocument(
-            DATABASES_ID!,
+            DATABASE_ID!,
             PATIENT_COLLECTION_ID!,
             ID.unique(),
             {
